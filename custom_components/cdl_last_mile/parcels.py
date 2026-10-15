@@ -59,8 +59,9 @@ _COMPLETION = "delivery complete"
 # parcel, so the mapping is a guess until a user reports one.
 _UNCONFIRMED_WORDINGS = frozenset({"cdl transfer scan", "order under investigation"})
 
-# The service stamps scans with a wall clock and no offset. Eastern is the
-# reading of the carrier's earlier tracker, not something the payload proves.
+# The service stamps scans with a wall clock and no offset. Eastern is an
+# assumption about where the clock comes from, not something the payload
+# proves; a one-shot WARNING asks users to confirm it.
 _CLOCK_ZONE = ZoneInfo("America/New_York")
 
 # Warnings already issued this HA session, so each fires once, not per poll.
