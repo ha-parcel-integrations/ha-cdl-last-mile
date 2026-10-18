@@ -45,7 +45,7 @@ Part of the [ha-parcel-integrations](https://ha-parcel-integrations.github.io/) 
 
 ## Requirements
 
-- Home Assistant 2024.12 or newer
+- Home Assistant 2025.12 or newer
 - A CDL Last Mile Solutions parcel and its tracking code, from the shipping
   confirmation or the sender — no account needed. Two shapes are accepted: a
   label number (`CDL` plus 11 digits) or an order number (9 digits, a hyphen
