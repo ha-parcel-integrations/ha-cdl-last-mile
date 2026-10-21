@@ -178,7 +178,12 @@ def _ordered_events(raw: dict) -> list[dict]:
         wording = event.get("trackingEvent")
         stamp = event.get("trackingEventTimestamp")
         moment = _scan_time(stamp)
-        if not isinstance(wording, str) or not wording.strip() or moment is None:
+        if (
+            not isinstance(wording, str)
+            or not wording.strip()
+            or not isinstance(stamp, str)
+            or moment is None
+        ):
             _warn_shape(
                 "event",
                 "a scan lacks trackingEvent or a readable trackingEventTimestamp",
