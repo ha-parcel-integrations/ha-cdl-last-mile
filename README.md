@@ -58,7 +58,12 @@ A custom Home Assistant integration that tracks your [CDL Last Mile Solutions](h
 
 1. In HACS, choose the three-dot menu → **Custom repositories**.
 2. Add `https://github.com/ha-parcel-integrations/ha-cdl-last-mile` as an **Integration**.
-3. Install **CDL Last Mile Solutions** and restart Home Assistant.
+3. Install **CDL Last Mile Solutions**.
+4. Restart Home Assistant if HACS asks you to.
+
+Or click the button below to open it directly in HACS:
+
+[![Open your Home Assistant instance and open this repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ha-parcel-integrations&repository=ha-cdl-last-mile&category=integration)
 
 ### Manual
 
@@ -66,7 +71,9 @@ Copy `custom_components/cdl_last_mile` into your `config/custom_components/` fol
 
 ## Configuration
 
-Add the integration via **Settings → Devices & Services → Add Integration → CDL Last Mile Solutions**. There is nothing to fill in: the hub is created immediately (CDL Last Mile Solutions tracking needs no account).
+[![Open your Home Assistant instance and start setting up this integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=cdl_last_mile)
+
+Or set it up by hand: add the integration via **Settings → Devices & Services → Add Integration → CDL Last Mile Solutions**. There is nothing to fill in: the hub is created immediately (CDL Last Mile Solutions tracking needs no account).
 
 Then add parcels via the integration's **Configure** dialog, the [`cdl_last_mile.track_parcel`](#services) service, or a [dashboard button](examples/dashboards/add_parcel_card.yaml). The tracking code is on your shipping confirmation or comes from the sender.
 
