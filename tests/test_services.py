@@ -1,8 +1,9 @@
 """Tests for the CDL Last Mile Solutions services (track_parcel / untrack_parcel)."""
+
 from unittest.mock import AsyncMock, patch
 
-import pytest
 from homeassistant.exceptions import ServiceValidationError
+import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.cdl_last_mile.const import (
@@ -14,7 +15,6 @@ from custom_components.cdl_last_mile.const import (
 from .payloads import active_sample
 
 _SAMPLE = active_sample()
-
 
 
 async def _setup(hass, parcels: list[dict] | None = None) -> MockConfigEntry:
@@ -113,9 +113,7 @@ async def test_track_parcel_duplicate_is_noop(hass):
 
 
 async def test_untrack_parcel_removes_from_options(hass):
-    entry = await _setup(
-        hass, parcels=[{CONF_TRACKING_CODE: "CDL00000000042"}]
-    )
+    entry = await _setup(hass, parcels=[{CONF_TRACKING_CODE: "CDL00000000042"}])
     with patch(
         "custom_components.cdl_last_mile.api.CDLLastMileSolutionsApiClient.async_get_parcel",
         new=AsyncMock(return_value=_SAMPLE),
@@ -132,9 +130,7 @@ async def test_untrack_parcel_removes_from_options(hass):
 
 
 async def test_untrack_unknown_code_is_noop(hass):
-    entry = await _setup(
-        hass, parcels=[{CONF_TRACKING_CODE: "CDL00000000042"}]
-    )
+    entry = await _setup(hass, parcels=[{CONF_TRACKING_CODE: "CDL00000000042"}])
     with patch(
         "custom_components.cdl_last_mile.api.CDLLastMileSolutionsApiClient.async_get_parcel",
         new=AsyncMock(return_value=_SAMPLE),

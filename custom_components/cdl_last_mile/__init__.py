@@ -1,8 +1,9 @@
 """CDL Last Mile Solutions parcel tracker custom component for Home Assistant."""
+
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
+import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -27,7 +28,9 @@ class CDLLastMileSolutionsData:
 type CDLLastMileSolutionsConfigEntry = ConfigEntry[CDLLastMileSolutionsData]
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: CDLLastMileSolutionsConfigEntry) -> bool:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: CDLLastMileSolutionsConfigEntry
+) -> bool:
     """Set up CDL Last Mile Solutions from a config entry."""
     # No auth: CDL Last Mile Solutions tracking is public, so the HA-managed session is fine.
     client = CDLLastMileSolutionsApiClient(async_get_clientsession(hass))
@@ -40,7 +43,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: CDLLastMileSolutionsConf
     # it with backoff.
     await coordinator.async_config_entry_first_refresh()
 
-    entry.runtime_data = CDLLastMileSolutionsData(client=client, coordinator=coordinator)
+    entry.runtime_data = CDLLastMileSolutionsData(
+        client=client, coordinator=coordinator
+    )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -64,7 +69,9 @@ async def _async_options_updated(
     await entry.runtime_data.coordinator.async_request_refresh()
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: CDLLastMileSolutionsConfigEntry) -> bool:
+async def async_unload_entry(
+    hass: HomeAssistant, entry: CDLLastMileSolutionsConfigEntry
+) -> bool:
     """Unload the CDL Last Mile Solutions config entry."""
     if not await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         return False

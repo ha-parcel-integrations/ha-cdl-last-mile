@@ -1,4 +1,5 @@
 """Tests for CDL Last Mile Solutions device triggers."""
+
 from unittest.mock import AsyncMock
 
 from custom_components.cdl_last_mile.const import DOMAIN

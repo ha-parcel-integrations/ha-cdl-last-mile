@@ -3,6 +3,7 @@
 Kept free of Home Assistant imports so the API client and the config flow
 share one definition.
 """
+
 from __future__ import annotations
 
 import re

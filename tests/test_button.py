@@ -1,4 +1,5 @@
 """Tests for the CDL Last Mile Solutions refresh button."""
+
 from unittest.mock import AsyncMock, MagicMock
 
 from custom_components.cdl_last_mile.button import CDLLastMileSolutionsRefreshButton

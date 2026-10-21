@@ -5,10 +5,11 @@ objects beyond the config entry's options. That keeps the carrier-specific
 mapping apart from the coordinator and makes it unit-testable without
 spinning up HA.
 """
+
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 import logging
-from datetime import datetime, timedelta, timezone
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -88,7 +89,11 @@ def _warn_shape(key: str, message: str) -> None:
     if key in _shape_warnings_logged:
         return
     _shape_warnings_logged.add(key)
-    _LOGGER.warning("CDL Last Mile Solutions: %s. Open an issue and paste this line: %s", message, NEW_ISSUE_URL)
+    _LOGGER.warning(
+        "CDL Last Mile Solutions: %s. Open an issue and paste this line: %s",
+        message,
+        NEW_ISSUE_URL,
+    )
 
 
 def map_event_status(wording: str | None) -> ParcelStatus | None:
@@ -124,11 +129,11 @@ def parse_iso(value: str | None) -> datetime | None:
     if not value:
         return None
     try:
-        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(str(value))
     except ValueError:
         return None
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
+        parsed = parsed.replace(tzinfo=UTC)
     return parsed
 
 
@@ -174,7 +179,10 @@ def _ordered_events(raw: dict) -> list[dict]:
         stamp = event.get("trackingEventTimestamp")
         moment = _scan_time(stamp)
         if not isinstance(wording, str) or not wording.strip() or moment is None:
-            _warn_shape("event", "a scan lacks trackingEvent or a readable trackingEventTimestamp")
+            _warn_shape(
+                "event",
+                "a scan lacks trackingEvent or a readable trackingEventTimestamp",
+            )
             continue
         wording = wording.strip()
         if (wording, stamp) in seen:
@@ -197,9 +205,7 @@ def _ordered_events(raw: dict) -> list[dict]:
     return ordered
 
 
-def build_history(
-    raw: dict, *, max_events: int = HISTORY_MAX_EVENTS
-) -> list[dict]:
+def build_history(raw: dict, *, max_events: int = HISTORY_MAX_EVENTS) -> list[dict]:
     """Build the canonical ``history`` list from the response.
 
     Each entry is ``{timestamp, status, raw_status}`` — identical across all
@@ -304,14 +310,12 @@ def apply_delivered_filter(parcels: list[dict], entry: ConfigEntry) -> list[dict
     shows.
     """
     options = entry.options
-    filter_type = options.get(
-        CONF_DELIVERED_FILTER_TYPE, DEFAULT_DELIVERED_FILTER_TYPE
-    )
+    filter_type = options.get(CONF_DELIVERED_FILTER_TYPE, DEFAULT_DELIVERED_FILTER_TYPE)
     amount = int(
         options.get(CONF_DELIVERED_FILTER_AMOUNT, DEFAULT_DELIVERED_FILTER_AMOUNT)
     )
     if filter_type == "days":
-        cutoff = datetime.now(timezone.utc) - timedelta(days=amount)
+        cutoff = datetime.now(UTC) - timedelta(days=amount)
         return [
             parcel
             for parcel in parcels

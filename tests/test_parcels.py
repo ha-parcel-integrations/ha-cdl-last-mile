@@ -1,6 +1,7 @@
 """Tests for the pure parcel-mapping helpers."""
+
+from datetime import UTC, datetime, timedelta
 import logging
-from datetime import datetime, timedelta, timezone
 
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -43,7 +44,7 @@ ISSUE_LINK = "issues/new?template=unrecognised_status.yml"
 
 
 @pytest.mark.parametrize(
-    "wording,expected",
+    ("wording", "expected"),
     [
         ("Label has been created", ParcelStatus.REGISTERED),
         ("Awaiting Package From Shipper", ParcelStatus.REGISTERED),
@@ -92,7 +93,7 @@ def test_delivered_parcel():
     # 11:25 Eastern (EDT on 2026-03-25) is 15:25 UTC
     assert parcel["delivered_at"] == "2026-03-25T11:25:00-04:00"
     assert parse_iso(parcel["delivered_at"]) == datetime(
-        2026, 3, 25, 15, 25, tzinfo=timezone.utc
+        2026, 3, 25, 15, 25, tzinfo=UTC
     )
 
 
@@ -179,7 +180,9 @@ def test_unmapped_newest_wording_falls_back_to_the_newest_mappable_scan(caplog):
 
 def test_only_unmapped_wording_is_unknown(caplog):
     raw = response(
-        ACTIVE_CODE, [event("Mystery Handoff", "2026-03-24T08:00:00")], "Mystery Handoff"
+        ACTIVE_CODE,
+        [event("Mystery Handoff", "2026-03-24T08:00:00")],
+        "Mystery Handoff",
     )
     assert normalize_parcel(raw, ACTIVE_CODE)["status"] == ParcelStatus.UNKNOWN
     assert caplog.text.count("Mystery Handoff") == 1
@@ -272,7 +275,8 @@ def test_history_keeps_fractional_seconds():
 
 def test_history_is_capped_to_the_newest_twenty():
     events = [
-        event("CDL Transfer Scan", f"2026-03-{day:02d}T10:00:00") for day in range(1, 26)
+        event("CDL Transfer Scan", f"2026-03-{day:02d}T10:00:00")
+        for day in range(1, 26)
     ]
     history = build_history(response(ACTIVE_CODE, events, "CDL Transfer Scan"))
     assert len(history) == 20
@@ -334,7 +338,7 @@ def test_capabilities_match_what_normalize_parcel_actually_returns():
         normalize_parcel(delivered_sample(), DELIVERED_CODE, include_history=True),
         normalize_parcel(active_sample(), ACTIVE_CODE, include_history=True),
     ]
-    assert CAPABILITIES == {"url", "history"}
+    assert {"url", "history"} == CAPABILITIES
     assert all(p["url"] and p["history"] for p in parcels)
     for key in ("weight", "dimensions", "pickup_point", "planned_from", "planned_to"):
         assert all(p[key] is None for p in parcels)
@@ -440,7 +444,7 @@ def _entry(filter_type: str, amount: int) -> MockConfigEntry:
 
 
 def _delivered_pair() -> list[dict]:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     return [
         {"barcode": "RECENT", "delivered_at": (now - timedelta(days=1)).isoformat()},
         {"barcode": "OLD", "delivered_at": (now - timedelta(days=30)).isoformat()},
@@ -470,7 +474,14 @@ def test_unconfirmed_wording_warns_once_without_parcel_data(caplog):
         "CDL Transfer Scan",
     )
     parcel = normalize_parcel(raw, ACTIVE_CODE)
-    normalize_parcel(response(ACTIVE_CODE, [event("CDL Transfer Scan", "2026-03-24T09:00:00")], "CDL Transfer Scan"), ACTIVE_CODE)
+    normalize_parcel(
+        response(
+            ACTIVE_CODE,
+            [event("CDL Transfer Scan", "2026-03-24T09:00:00")],
+            "CDL Transfer Scan",
+        ),
+        ACTIVE_CODE,
+    )
 
     assert parcel["status"] == ParcelStatus.IN_TRANSIT
     assert caplog.text.count("CDL Transfer Scan") == 1

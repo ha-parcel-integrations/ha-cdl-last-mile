@@ -2,6 +2,7 @@
 
 Shaped like the carrier's tracking response, with invented values only.
 """
+
 from __future__ import annotations
 
 ACTIVE_CODE = "CDL00000000042"

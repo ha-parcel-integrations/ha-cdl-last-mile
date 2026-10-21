@@ -1,4 +1,5 @@
 """Tests for the CDL Last Mile Solutions API client."""
+
 import json
 from unittest.mock import AsyncMock, MagicMock
 
@@ -54,7 +55,9 @@ def _session_returning(
 
 async def test_get_parcel_returns_the_payload():
     session = _session_returning(200, delivered_sample())
-    parcel = await CDLLastMileSolutionsApiClient(session).async_get_parcel(DELIVERED_CODE)
+    parcel = await CDLLastMileSolutionsApiClient(session).async_get_parcel(
+        DELIVERED_CODE
+    )
 
     assert parcel["trackingInformation"]["referenceNumber"] == DELIVERED_CODE
     kwargs = session.get.call_args.kwargs

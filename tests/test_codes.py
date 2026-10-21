@@ -1,4 +1,5 @@
 """Tests for tracking-code shapes."""
+
 import pytest
 
 from custom_components.cdl_last_mile.codes import (
@@ -8,7 +9,7 @@ from custom_components.cdl_last_mile.codes import (
 
 
 @pytest.mark.parametrize(
-    "raw,expected",
+    ("raw", "expected"),
     [
         ("cdl02867080305", "CDL02867080305"),
         ("  CDL02867080305 ", "CDL02867080305"),

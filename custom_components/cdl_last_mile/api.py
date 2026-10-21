@@ -1,4 +1,5 @@
 """CDL Last Mile Solutions public tracking API client."""
+
 from __future__ import annotations
 
 import json
@@ -67,16 +68,16 @@ class CDLLastMileSolutionsApiClient:
             if status == 429:
                 retry_after_header = response.headers.get("Retry-After")
                 try:
-                    retry_after = float(retry_after_header) if retry_after_header else None
+                    retry_after = (
+                        float(retry_after_header) if retry_after_header else None
+                    )
                 except ValueError:
                     retry_after = None  # an HTTP-date, not seconds; let the caller's own backoff handle it
                 raise CDLLastMileSolutionsApiError(
                     "HTTP 429", status_code=429, retry_after=retry_after
                 )
             if status != 200:
-                raise CDLLastMileSolutionsApiError(
-                    f"HTTP {status}", status_code=status
-                )
+                raise CDLLastMileSolutionsApiError(f"HTTP {status}", status_code=status)
             body = bytearray()
             async for chunk in response.content.iter_chunked(65536):
                 body.extend(chunk)
@@ -97,7 +98,7 @@ class CDLLastMileSolutionsApiClient:
 
         reference = payload["trackingInformation"].get("referenceNumber")
         if not isinstance(reference, str) or reference.strip().upper() != value:
-            global _mismatch_logged
+            global _mismatch_logged  # noqa: PLW0603 - log once per process
             if not _mismatch_logged:
                 _mismatch_logged = True
                 _LOGGER.warning(
