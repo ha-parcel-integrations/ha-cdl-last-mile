@@ -1,6 +1,7 @@
 {
   "domain": "cdl_last_mile",
   "name": "CDL Last Mile Solutions",
+  "categories": ["productivity_information"],
   "codeowners": [
     "@peter-mdf"
   ],
