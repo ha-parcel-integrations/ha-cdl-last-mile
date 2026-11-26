@@ -39,6 +39,7 @@ A custom Home Assistant integration that tracks your [CDL Last Mile Solutions](h
 - Per-parcel sensor with the canonical status (`registered` / `in_transit` / `out_for_delivery` / `delivered` / …), the carrier's own status text and a tracking deep-link
 - Summary sensors: incoming parcels, next delivery, recently delivered parcels
 - `cdl_last_mile.track_parcel` / `cdl_last_mile.untrack_parcel` services, so a dashboard button can add a parcel
+- A `contents` field on every parcel, set in your own words with the `cdl_last_mile.update_contents` service or the `contents` field of `cdl_last_mile.track_parcel`; it titles the calendar event and shows on the next-delivery sensor
 - Events + device triggers for no-code automations (parcel registered, status changed, delivered)
 - Opt-in per-parcel status history
 - Manual refresh button and a diagnostic last-update sensor
@@ -162,8 +163,11 @@ Every payload is the full normalised parcel plus the hub's `device_id`. Events a
 
 | Service | Fields | Description |
 |---|---|---|
-| `cdl_last_mile.track_parcel` | `tracking_code` | Start tracking a parcel |
+| `cdl_last_mile.track_parcel` | `tracking_code`, `contents` (optional) | Start tracking a parcel |
 | `cdl_last_mile.untrack_parcel` | `tracking_code` | Stop tracking a parcel |
+| `cdl_last_mile.update_contents` | `tracking_code`, `contents` (optional) | Set, replace or clear (empty text) a note on what is in a parcel |
+
+The `contents` text is stored locally, never sent to CDL Last Mile Solutions, and fills the parcel's `contents` field; it titles the parcel's calendar event and shows on the next-delivery sensor.
 
 ## Examples
 

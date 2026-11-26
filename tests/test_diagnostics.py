@@ -19,9 +19,9 @@ async def test_diagnostics_redacts_and_counts(hass):
     entry.runtime_data.coordinator.current_tier_minutes = 15
     entry.runtime_data.coordinator.update_interval = timedelta(minutes=15)
     raw = delivered_sample(DELIVERED_CODE)
-    entry.runtime_data.coordinator.data = [
-        normalize_parcel(raw, DELIVERED_CODE, include_history=True)
-    ]
+    parcel = normalize_parcel(raw, DELIVERED_CODE, include_history=True)
+    parcel["contents"] = "Running shoes"
+    entry.runtime_data.coordinator.data = [parcel]
     entry.runtime_data.coordinator.delivered = []
     entry.runtime_data.coordinator.delivered_codes = set()
 
@@ -42,13 +42,21 @@ async def test_diagnostics_redacts_and_counts(hass):
     parcel = result["incoming"][0]
     assert parcel["barcode"] == "**REDACTED**"
     assert parcel["url"] == "**REDACTED**"
+    assert parcel["contents"] == "**REDACTED**"
     assert parcel["raw"] == "**REDACTED**"
     assert parcel["history"] == "**REDACTED**"
     # non-identifying fields survive, or the diagnostics would be useless
     assert parcel["status"] == "delivered"
     assert parcel["raw_status"] == "Delivery complete"
     dumped = str(result)
-    for value in (DELIVERED_CODE, PHOTO, "Test Driver", "Testville", "Front porch"):
+    for value in (
+        DELIVERED_CODE,
+        "Running shoes",
+        PHOTO,
+        "Test Driver",
+        "Testville",
+        "Front porch",
+    ):
         assert value not in dumped
 
 
