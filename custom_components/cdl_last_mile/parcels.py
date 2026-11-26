@@ -375,7 +375,9 @@ def normalize_parcel(
         "status": status,
         "raw_status": raw_status,
         "delivered": delivered,
-        "delivered_at": completion["moment"].isoformat() if delivered else None,
+        "delivered_at": completion["moment"].isoformat()
+        if delivered and completion is not None
+        else None,
         "planned_from": None,
         "planned_to": None,
         "pickup": False,
